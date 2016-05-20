@@ -46,10 +46,11 @@ void draw() {
 		} else {
 			cout << i << "\n|"[ i % 3 != 0 ];
 		}
-		if( i % 3 == 0 ) {
+		if( i == 3 or i == 6 ) {
 			cout << string( 5, '-' ) << "\n";
 		}
 	}
+	cout << "\n";
 }
 
 bool running() {
