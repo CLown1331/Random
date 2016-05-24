@@ -1,7 +1,7 @@
 /*
 	Author: Araf Al-Jami
-	Diff_Update: Mohammed Raihan Hussain
-	Last Edited: 21/05/16
+	Difficulty_Update: Mohammed Raihan Hussain
+	Last Edited: 24/05/16
 */
 #include <iostream>
 #include <cstring>
@@ -19,12 +19,12 @@ int mv_cnt;
 
 void init();
 void draw();
-void single_player( int player , int diff_level);
+void single_player( int player , int diff_level );
 void two_player();
 bool running();
 int minimax( int player );
 void player_move( int player  );
-void computer_move( int player , int diff_level);
+void computer_move( int player , int diff_level );
 
 int main( int argc, char **argv ) {
 	int inp;
@@ -47,6 +47,7 @@ int main( int argc, char **argv ) {
 			cout << "Enter 1 If You Want To Be The First Player\n";
 			cout << "Else Enter 2: ";
 			cin >> inp;
+			invalid = true;
 			cout << "\n";
 		} while( inp < 1 or inp > 2 );
 		int cns = inp;
@@ -58,9 +59,10 @@ int main( int argc, char **argv ) {
 			cout << "Enter 1 for Easy Difficulty\n";
 			cout << "Else Enter 2 for Hard Difficulty: ";
 			cin >> inp;
+			invalid = true;
 			cout << "\n";
 		} while( inp < 1 or inp > 2 );
-		single_player(cns, inp );
+		single_player( cns, inp );
 	} else {
 		two_player();
 	}
@@ -153,7 +155,7 @@ void two_player() {
 	cout << determine( 2, 0 ) << "\n";
 }
 
-void single_player( int player , int diff_level) {
+void single_player( int player , int diff_level ) {
 	init();
 	draw();
 	while( running() ) {
@@ -186,32 +188,32 @@ void player_move( int player ) {
 void computer_move( int player , int diff_level ) {
 	int move = -1;
 	int cmp = player == 1 ? 2 : 1;
-	if (diff_level == 2){
-        int best = -11;
-        int temp;
-        for( int i=1; i<=9; i++ ) {
-            if( board[i] == 0 ) {
-                board[i] = cmp;
-                --mv_cnt;
-                temp = -minimax( player );
-                board[i] = 0;
-                ++mv_cnt;
-                if( temp > best ) {
-                    best = temp;
-                    move = i;
-                }
-            }
-        }
+	if( diff_level == 2 ) {
+		int best = -11;
+		int temp;
+		for( int i=1; i<=9; i++ ) {
+			if( board[i] == 0 ) {
+				board[i] = cmp;
+				--mv_cnt;
+				temp = -minimax( player );
+				board[i] = 0;
+				++mv_cnt;
+				if( temp > best ) {
+					best = temp;
+					move = i;
+				}
+			}
+		}
 	}
 	else{
-        int pos;
-        while (1){
-            pos = rand()%9 + 1;
-            if (board[pos] != player){
-                    move = pos;
-                break;
-            }
-        }
+		int pos;
+		while( true ) {
+			pos = rand() % 9 + 1;
+			if( board[pos] != player ) {
+				move = pos;
+				break;
+			}
+		}
 	}
 	board[move] = cmp;
 }
@@ -258,3 +260,4 @@ int minimax( int player ) {
 	}
 	return best;
 }
+
