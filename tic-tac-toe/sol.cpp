@@ -1,9 +1,11 @@
-/*	
+/*
 	Author: Araf Al-Jami
-	Last Edited: 21/05/16
+	Difficulty_Update: Mohammed Raihan Hussain
+	Last Edited: 24/05/16
 */
 #include <iostream>
 #include <cstring>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -17,12 +19,12 @@ int mv_cnt;
 
 void init();
 void draw();
-void single_player( int player );
+void single_player( int player , int diff_level );
 void two_player();
 bool running();
 int minimax( int player );
-void player_move( int player );
-void computer_move( int player );
+void player_move( int player  );
+void computer_move( int player , int diff_level );
 
 int main( int argc, char **argv ) {
 	int inp;
@@ -45,9 +47,22 @@ int main( int argc, char **argv ) {
 			cout << "Enter 1 If You Want To Be The First Player\n";
 			cout << "Else Enter 2: ";
 			cin >> inp;
+			invalid = true;
 			cout << "\n";
 		} while( inp < 1 or inp > 2 );
-		single_player( inp );
+		int cns = inp;
+		invalid = false;
+		do {
+			if( invalid ) {
+				cout << "Please Enter A Valid Input\n";
+			}
+			cout << "Enter 1 for Easy Difficulty\n";
+			cout << "Else Enter 2 for Hard Difficulty: ";
+			cin >> inp;
+			invalid = true;
+			cout << "\n";
+		} while( inp < 1 or inp > 2 );
+		single_player( cns, inp );
 	} else {
 		two_player();
 	}
@@ -95,7 +110,7 @@ string determine( int game_type, int player ) {
 	for( int i=0; i<8; i++ ) {
 		if( board[ win_combos[i][0] ] == board[ win_combos[i][1] ]
 					and
-		board[ win_combos[i][1] ] == board[ win_combos[i][2] ] 
+		board[ win_combos[i][1] ] == board[ win_combos[i][2] ]
 		and board[ win_combos[i][2] ] != 0 ) {
 			if( board[ win_combos[i][2] ] == 1 ) {
 				if( game_type == 1 ) {
@@ -116,7 +131,7 @@ string determine( int game_type, int player ) {
 }
 
 void two_player() {
-	int inp = 0; 
+	int inp = 0;
 	int player = 1;
 	bool invalid = false;
 	init();
@@ -140,14 +155,14 @@ void two_player() {
 	cout << determine( 2, 0 ) << "\n";
 }
 
-void single_player( int player ) {
+void single_player( int player , int diff_level ) {
 	init();
 	draw();
 	while( running() ) {
 		if( mv_cnt & 1 ) {
-			player == 1 ? player_move( player ) : computer_move( player );
+			player == 1 ? player_move( player ) : computer_move( player, diff_level );
 		} else {
-			player == 2 ? player_move( player ) : computer_move( player );
+			player == 2 ? player_move( player ) : computer_move( player, diff_level );
 		}
 		--mv_cnt;
 		draw();
@@ -170,21 +185,33 @@ void player_move( int player ) {
 	board[inp] = player;
 }
 
-void computer_move( int player ) {
-	int cmp = player == 1 ? 2 : 1;
+void computer_move( int player , int diff_level ) {
 	int move = -1;
-	int best = -11;
-	int temp;
-	for( int i=1; i<=9; i++ ) {
-		if( board[i] == 0 ) {
-			board[i] = cmp;
-			--mv_cnt;
-			temp = -minimax( player );
-			board[i] = 0;
-			++mv_cnt;
-			if( temp > best ) {
-				best = temp;
-				move = i;
+	int cmp = player == 1 ? 2 : 1;
+	if( diff_level == 2 ) {
+		int best = -11;
+		int temp;
+		for( int i=1; i<=9; i++ ) {
+			if( board[i] == 0 ) {
+				board[i] = cmp;
+				--mv_cnt;
+				temp = -minimax( player );
+				board[i] = 0;
+				++mv_cnt;
+				if( temp > best ) {
+					best = temp;
+					move = i;
+				}
+			}
+		}
+	}
+	else{
+		int pos;
+		while( true ) {
+			pos = rand() % 9 + 1;
+			if( board[pos] != player ) {
+				move = pos;
+				break;
 			}
 		}
 	}
@@ -233,3 +260,4 @@ int minimax( int player ) {
 	}
 	return best;
 }
+
